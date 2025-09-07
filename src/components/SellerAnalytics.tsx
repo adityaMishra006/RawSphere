@@ -188,7 +188,7 @@ export function SellerAnalytics({ user }: SellerAnalyticsProps) {
             <DollarSign className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">$847,200</div>
+            <div className="text-2xl font-bold text-green-600">₹8,47,200</div>
             <div className="flex items-center text-xs text-green-600">
               <TrendingUp className="w-3 h-3 mr-1" />
               +23.8% from last year
@@ -212,7 +212,7 @@ export function SellerAnalytics({ user }: SellerAnalyticsProps) {
             <Brain className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-600">$43,500</div>
+            <div className="text-2xl font-bold text-purple-600">₹43,500</div>
             <div className="flex items-center text-xs text-orange-600">
               <AlertTriangle className="w-3 h-3 mr-1" />
               Next quarter forecast
@@ -258,20 +258,9 @@ export function SellerAnalytics({ user }: SellerAnalyticsProps) {
           <SurplusTable />
         </CardContent>
       </Card>
-      <Card>
-  <CardHeader>
-    <CardTitle>AI Surplus Predictions</CardTitle>
-    <CardDescription>
-      Surplus / shortage risk assessment for each drug
-    </CardDescription>
-  </CardHeader>
-  <CardContent>
-    <SurplusTable />
-  </CardContent>
-</Card>
+      
 
 {/* New Market Demand Section */}
-<MarketDemandInsights />
 
     </div>
   );
