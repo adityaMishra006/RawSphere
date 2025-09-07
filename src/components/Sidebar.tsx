@@ -25,7 +25,6 @@ interface SidebarProps {
 const getNavigationItems = (userType: 'seller' | 'buyer'): Array<{ id: Page, label: string, icon: any }> => {
   const commonItems = [
     { id: 'dashboard' as Page, label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'marketplace' as Page, label: 'Marketplace', icon: ShoppingCart },
     { id: 'transactions' as Page, label: 'Transactions', icon: Receipt },
     { id: 'analytics' as Page, label: 'Analytics', icon: BarChart3 },
     { id: 'settings' as Page, label: 'Settings', icon: Settings },
@@ -35,13 +34,14 @@ const getNavigationItems = (userType: 'seller' | 'buyer'): Array<{ id: Page, lab
     // Insert "Add Listing" for sellers after marketplace
     return [
       commonItems[0], // Dashboard
-      commonItems[1], // Marketplace
       { id: 'add-listing' as Page, label: 'Add Listing', icon: Plus },
       ...commonItems.slice(2) // Rest of the items
     ];
   } else {
     // Buyers don't see "Add Listing"
-    return commonItems;
+    return commonItems.concat(
+      { id: 'marketplace' as Page, label: 'Marketplace', icon: ShoppingCart }
+    );
   }
 };
 

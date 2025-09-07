@@ -38,3 +38,8 @@ coverage/
 
 # Optional: cache
 .cache/
+.venv/
+node_modules/
+__pycache__/
+*.env
+.DS_Store

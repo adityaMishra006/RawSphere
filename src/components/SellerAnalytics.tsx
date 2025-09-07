@@ -9,8 +9,6 @@ import {
   Tooltip,
   Legend,
   CartesianGrid,
-  BarChart,
-  Bar,
 } from "recharts";
 import {
   Card,
@@ -39,9 +37,8 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { User } from "../App";
-
-// import the new table
 import SurplusTable from "../Surplus_table";
+import MarketDemandInsights from "./MarketDemandInsights";
 
 interface SellerAnalyticsProps {
   user: User;
@@ -49,47 +46,64 @@ interface SellerAnalyticsProps {
 
 // 🔹 ForecastChart Component
 function ForecastChart() {
-  const [selectedMonth, setSelectedMonth] = useState("Month+1");
+  const [selectedMonth, setSelectedMonth] = useState<string>("Month+1");
   const [data, setData] = useState<any[]>([]);
   const [monthKeys, setMonthKeys] = useState<string[]>([]);
-  const [yMax, setYMax] = useState<number>(100);
+  const [forecasts, setForecasts] = useState<Record<string, Record<string, number>>>({});
+  const [yMax, setYMax] = useState<number>(10000);
 
+  // Fetch forecast once
   useEffect(() => {
     fetch("http://127.0.0.1:8000/forecast_monthly")
       .then((res) => res.json())
       .then((json) => {
-        if (!json.forecasts) return;
-        const forecasts = json.forecasts;
+        if (!json || !json.forecasts) return;
 
-        const keys = Object.keys(Object.values(forecasts)[0] as Record<string, number>);
+        let fc: Record<string, Record<string, number>> = json.forecasts;
+        if ((fc as any).forecasts) {
+          fc = (fc as any).forecasts;
+        }
+
+        const sample = Object.values(fc)[0] as Record<string, number> | undefined;
+        if (!sample) return;
+
+        const keys = Object.keys(sample);
         setMonthKeys(keys);
 
+        const initialMonth = keys.includes("Month+1") ? "Month+1" : keys[0];
+        setSelectedMonth(initialMonth);
+        setForecasts(fc);
+
+        // 🔹 Compute global max across all drugs & months
         let globalMax = 0;
-        Object.keys(forecasts).forEach((drug) => {
-          keys.forEach((month) => {
-            const val = forecasts[drug][month] || 0;
+        Object.values(fc).forEach((drugMonths) => {
+          Object.values(drugMonths).forEach((val) => {
             if (val > globalMax) globalMax = val;
           });
         });
-        setYMax(Math.ceil(globalMax * 1.1));
 
-        if (selectedMonth && keys.includes(selectedMonth)) {
-          const chartData: any[] = Object.keys(forecasts).map((drug) => ({
-            drug,
-            forecast: forecasts[drug][selectedMonth] || 0,
-          }));
-          setData(chartData);
-        }
+        setYMax(Math.ceil(globalMax * 1.1)); // add 10% padding
       })
       .catch((err) => console.error("API error:", err));
-  }, [selectedMonth]);
+  }, []);
+
+  // Recompute chart when month changes
+  useEffect(() => {
+    if (!selectedMonth || !forecasts || Object.keys(forecasts).length === 0) return;
+
+    const chartData = Object.keys(forecasts).map((drug) => ({
+      drug,
+      forecast: Number(forecasts[drug]?.[selectedMonth] ?? 0),
+    }));
+    setData(chartData);
+  }, [selectedMonth, forecasts]);
 
   return (
     <div>
       <div className="flex justify-end mb-4">
         <Select value={selectedMonth} onValueChange={setSelectedMonth}>
           <SelectTrigger className="w-40">
-            <SelectValue />
+            <SelectValue placeholder="Select Month" />
           </SelectTrigger>
           <SelectContent>
             {monthKeys.map((m) => (
@@ -101,10 +115,11 @@ function ForecastChart() {
         </Select>
       </div>
 
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={500}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="drug" />
+          {/* 🔹 Fixed Y-axis with auto-detected global max + padding */}
           <YAxis domain={[0, yMax]} />
           <Tooltip />
           <Legend />
@@ -114,7 +129,7 @@ function ForecastChart() {
             stroke="#6366F1"
             strokeWidth={2}
             dot
-            name="Forecast"
+            name="Forecast (units)"
           />
         </LineChart>
       </ResponsiveContainer>
@@ -129,7 +144,9 @@ export function SellerAnalytics({ user }: SellerAnalyticsProps) {
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-semibold text-gray-900">Seller Analytics</h1>
+          <h1 className="text-3xl font-semibold text-gray-900">
+            Seller Analytics
+          </h1>
           <p className="text-gray-600 mt-1">
             AI-powered insights for your pharmaceutical surplus business
           </p>
@@ -214,32 +231,8 @@ export function SellerAnalytics({ user }: SellerAnalyticsProps) {
         </Card>
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Revenue vs Predicted Surplus</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={[
-                  { month: "Jan", revenue: 18500, surplus: 4200 },
-                  { month: "Feb", revenue: 22000, surplus: 5100 },
-                  { month: "Mar", revenue: 19800, surplus: 4800 },
-                ]}
-              >
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="revenue" fill="#10B981" />
-                <Bar dataKey="surplus" fill="#EF4444" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
+      {/* Charts Section (only LineChart now) */}
+      <div className="grid grid-cols-1 gap-6">
         <Card>
           <CardHeader>
             <CardTitle>Predicted Monthly Sales</CardTitle>
@@ -265,6 +258,21 @@ export function SellerAnalytics({ user }: SellerAnalyticsProps) {
           <SurplusTable />
         </CardContent>
       </Card>
+      <Card>
+  <CardHeader>
+    <CardTitle>AI Surplus Predictions</CardTitle>
+    <CardDescription>
+      Surplus / shortage risk assessment for each drug
+    </CardDescription>
+  </CardHeader>
+  <CardContent>
+    <SurplusTable />
+  </CardContent>
+</Card>
+
+{/* New Market Demand Section */}
+<MarketDemandInsights />
+
     </div>
   );
 }
