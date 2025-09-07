@@ -30,18 +30,18 @@ export function Settings({ user }: SettingsProps) {
   const [profileData, setProfileData] = useState({
     name: user.name,
     email: user.email,
-    phone: '+1 (555) 123-4567',
+    phone: '+91 92655 85560',
     title: 'Supply Chain Manager',
     bio: 'Experienced in pharmaceutical supply chain optimization and sustainability initiatives.'
   });
 
   const [companyData, setCompanyData] = useState({
     name: user.company,
-    address: '123 Business Street, San Francisco, CA 94105',
+    address: 'C-8/1, Ajwa Rd, Sardar Estate, Vadodara, Gujarat 390019',
     website: 'https://www.pharmacorp.com',
     industry: 'Pharmaceutical',
     size: '501-1000 employees',
-    taxId: 'US-123456789'
+    taxId: 'IND-123456789'
   });
 
   const [notifications, setNotifications] = useState({
