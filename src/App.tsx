@@ -5,7 +5,7 @@ import { Dashboard } from './components/Dashboard';
 import { Marketplace } from './components/Marketplace';
 import { AddListing } from './components/AddListing';
 import { Transactions } from './components/Transactions';
-import { Analytics } from './components/Analytics';
+import {Analytics} from './components/Analytics';
 import { Settings } from './components/Settings';
 import { Sidebar } from './components/Sidebar';
 import { Toaster } from './components/ui/sonner';

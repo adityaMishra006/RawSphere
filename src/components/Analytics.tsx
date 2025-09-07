@@ -1,4 +1,4 @@
-import { SellerAnalytics } from './SellerAnalytics';
+import { SellerAnalytics } from "./SellerAnalytics";
 import { BuyerAnalytics } from './BuyerAnalytics';
 import { User } from '../App';
 
