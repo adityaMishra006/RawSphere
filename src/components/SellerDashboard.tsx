@@ -93,7 +93,8 @@ export function SellerDashboard({ user }: SellerDashboardProps) {
         <Card className="border-l-4 border-l-green-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue Earned</CardTitle>
-            <DollarSign className="h-4 w-4 text-green-600" />
+            <span className="text-green-600 font-bold text-lg">₹</span>
+
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">₹8,47,200</div>
