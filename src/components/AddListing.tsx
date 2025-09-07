@@ -139,7 +139,7 @@ export function AddListing({ onAddListing }: AddListingProps) {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="price">Price (USD) *</Label>
+                    <Label htmlFor="price">Price (INR) *</Label>
                     <Input
                       id="price"
                       type="number"
@@ -247,7 +247,7 @@ export function AddListing({ onAddListing }: AddListingProps) {
                   <div className="flex justify-between">
                     <span className="text-gray-600">Price:</span>
                     <span className="font-bold text-green-600">
-                      {formData.price ? `$${parseFloat(formData.price).toLocaleString()}` : '-'}
+                      {formData.price ? `₹${parseFloat(formData.price).toLocaleString()}` : '-'}
                     </span>
                   </div>
                 </div>

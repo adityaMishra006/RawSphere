@@ -80,7 +80,7 @@ export default function SurplusTable() {
               <TableCell>{item.features.Surplus.toFixed(2)}</TableCell>
               <TableCell>{item.features.ShelfLifeDays}</TableCell>
               <TableCell>{item.features.LeadTimeDays}</TableCell>
-              <TableCell>${item.features.UnitCost.toFixed(2)}</TableCell>
+              <TableCell>₹{item.features.UnitCost.toFixed(2)}</TableCell>
               <TableCell>
                 {(item.features.WastageRate * 100).toFixed(1)}%
               </TableCell>
