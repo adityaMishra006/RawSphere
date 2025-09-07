@@ -26,24 +26,26 @@ const getNavigationItems = (userType: 'seller' | 'buyer'): Array<{ id: Page, lab
   const commonItems = [
     { id: 'dashboard' as Page, label: 'Dashboard', icon: LayoutDashboard },
     { id: 'transactions' as Page, label: 'Transactions', icon: Receipt },
-    { id: 'analytics' as Page, label: 'Analytics', icon: BarChart3 },
     { id: 'settings' as Page, label: 'Settings', icon: Settings },
   ];
 
   if (userType === 'seller') {
-    // Insert "Add Listing" for sellers after marketplace
+    // Sellers get Add Listing + Analytics
     return [
       commonItems[0], // Dashboard
       { id: 'add-listing' as Page, label: 'Add Listing', icon: Plus },
-      ...commonItems.slice(2) // Rest of the items
+      { id: 'analytics' as Page, label: 'Analytics', icon: BarChart3 },
+      ...commonItems.slice(1), // Transactions + Settings
     ];
   } else {
-    // Buyers don't see "Add Listing"
-    return commonItems.concat(
-      { id: 'marketplace' as Page, label: 'Marketplace', icon: ShoppingCart }
-    );
+    // Buyers get Marketplace, but no Analytics
+    return [
+      ...commonItems,
+      { id: 'marketplace' as Page, label: 'Marketplace', icon: ShoppingCart },
+    ];
   }
 };
+
 
 export function Sidebar({ currentPage, onPageChange, onGoHome, user }: SidebarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
